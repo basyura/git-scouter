@@ -57,7 +57,7 @@ if pcon[:commit]
     while line = io.gets
       if line =~ /^commit/
         log(status) if status
-        status = Status.new
+        status = GitScouter::Status.new
       end
       status.add(line)
     end
@@ -83,7 +83,7 @@ IO.popen('git log --name-status') do |io|
           log(status)
         end
       end
-      status = Status.new
+      status = GitScouter::Status.new
     end
     status.add(line)
   end
