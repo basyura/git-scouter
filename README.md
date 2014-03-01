@@ -1,6 +1,8 @@
 # GitScouter
 
-scouter for git
+scouter for git.
+display degree of change by diff/lcs.
+ref : http://blog.basyura.org/entry/2014/02/27/215453
 
 ## Installation
 
