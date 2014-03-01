@@ -8,15 +8,31 @@ scouter for git
 
 ## Usage
 
+analyze all commit
+
     $ git-scouter
 
+analyze user's all commit
+
     $ git-scouter -u user
+
+analyze target one day's commit
 
     $ git-scouter -d 20140301
 
     $ git-scouter -d 0301
 
+    $ git-scouter -d today
+
+    $ git-scouter -d 0
+
+    $ git-scouter -d -1
+
+analyze commit
+
     $ git-scouter -c HEAD
+
+    $ git-scouter -c HEAD~
 
     $ git-scouter -c c1b543b46ddfc87a2ab1f5088a33ff3634be94a6
 
