@@ -14,6 +14,8 @@ scouter for git
 
     $ git-scouter -d 20140301
 
+    $ git-scouter -d 0301
+
     $ git-scouter -c HEAD
 
     $ git-scouter -c c1b543b46ddfc87a2ab1f5088a33ff3634be94a6
@@ -34,7 +36,7 @@ output
               fixed reload userstream behavior with track
     305 : 51acfa535fbb984889d0369cb476e3110db94846 - basyura  Mon Nov 4 17:26:37 2013 +0900
               defined <Plug>
-       1 : 9bc7fef07a2741862f2080746d9a348210afdc0a - basyura  Mon Nov 4 09:49:27 2013 +0900
+      1 : 9bc7fef07a2741862f2080746d9a348210afdc0a - basyura  Mon Nov 4 09:49:27 2013 +0900
 
 ## License
 
