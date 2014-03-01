@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = GitScouter::VERSION
   spec.authors       = ["basyura"]
   spec.email         = ["basyura@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{scouter for git}
+  spec.description   = %q{scouter for git}
   spec.homepage      = ""
   spec.license       = "MIT"
 
