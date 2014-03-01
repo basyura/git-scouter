@@ -42,7 +42,13 @@ def pcon
   opts = OptionParser.new
   opts.on("-u user")  {|v| @pcon[:user]   = v }
   opts.on("-c commit"){|v| @pcon[:commit] = v }
-  opts.on("-d date")  {|v| @pcon[:date]   = DateTime.parse(v) }
+  opts.on("-d date")  do |v|
+    if v == 'today'
+      @pcon[:date] = DateTime.now
+    else
+      @pcon[:date] = DateTime.parse(v)
+    end
+  end
   opts.parse!(ARGV)
   @pcon
 end
