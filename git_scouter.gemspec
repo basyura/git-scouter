@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'git_scouter/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "git_scouter"
+  spec.name          = "git-scouter"
   spec.version       = GitScouter::VERSION
   spec.authors       = ["basyura"]
   spec.email         = ["basyura@gmail.com"]
