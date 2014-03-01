@@ -30,7 +30,7 @@ def log(status)
     point_logs << point.to_s.rjust(16) + "  " + file + " (#{v1} : #{v2})"
   end
 
-  puts "#{total.to_s.rjust(8)} : #{status[:commit]}  #{status[:author]}  #{status[:date]}"
+  puts "#{total.to_s.rjust(8)} : #{status[:commit]} - #{status[:author]}  #{status[:date]}"
   puts status.comment
   #point_logs.each {|log| puts log }
   #puts '' if point_logs.empty?
@@ -46,9 +46,6 @@ def pcon
   opts.parse!(ARGV)
   @pcon
 end
-
-p pcon
-puts ''
 
 if pcon[:commit]
   log_command = "git show --name-status #{pcon[:commit]}"
