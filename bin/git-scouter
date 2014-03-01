@@ -42,16 +42,27 @@ def pcon
   opts = OptionParser.new
   opts.on("-u user")  {|v| @pcon[:user]   = v }
   opts.on("-c commit"){|v| @pcon[:commit] = v }
-  opts.on("-d date")  do |v|
-    if v == 'today'
-      @pcon[:date] = DateTime.now
-    else
-      @pcon[:date] = DateTime.parse(v)
-    end
-  end
+  opts.on("-d date")  {|v| @pcon[:date]   = parse_date(v) }
+  opts.on("--debug")  {|v| @pcon[:debug]  = true }
   opts.parse!(ARGV)
   @pcon
 end
+
+def parse_date(v)
+  if v == 'today'
+    return @pcon[:date] = DateTime.now
+  end
+  begin
+    return @pcon[:date] = DateTime.parse(v)
+  rescue
+  end
+  return DateTime.now + v.to_i
+end
+
+
+puts pcon if pcon[:debug]
+
+puts ''
 
 if pcon[:commit]
   log_command = "git show --name-status #{pcon[:commit]}"
