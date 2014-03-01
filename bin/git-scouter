@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File.dirname(__FILE__) + '/../lib/')
+
+require 'git_scouter'
+
+ENV['GIT_PAGER'] = ''
+
+def get_content(commit, file_path)
+  IO.popen("git show #{commit}:#{file_path} 2>/dev/null") { |io| io.read }
+end
+
+def log(status)
+  return if pcon[:user] && status[:author] !~ /#{pcon[:user]}/
+
+  total = 0
+  point_logs = []
+
+  for file in status.files
+    content1 = get_content(status[:commit], file)
+    content2 = get_content(status[:commit] + '~', file)
+    lcs = Diff::LCS.LCS(content1, content2)
+    v1 = lcs.length - content1.length
+    v2 = lcs.length - content2.length
+
+    v1 = v1 * -1 if v1 < 0
+    v2 = v2 * -1 if v2 < 0
+    point = v1 > v2 ? v1 : v2
+    total += point
+    point_logs << point.to_s.rjust(16) + "  " + file + " (#{v1} : #{v2})"
+  end
+
+  puts "#{total.to_s.rjust(8)} : #{status[:commit]}  #{status[:author]}  #{status[:date]}"
+  puts status.comment
+  #point_logs.each {|log| puts log }
+  #puts '' if point_logs.empty?
+end
+
+def pcon
+  return @pcon if @pcon
+  @pcon = Hash.new
+  opts = OptionParser.new
+  opts.on("-u user")  {|v| @pcon[:user]   = v }
+  opts.on("-c commit"){|v| @pcon[:commit] = v }
+  opts.on("-d date")  {|v| @pcon[:date]   = DateTime.parse(v) }
+  opts.parse!(ARGV)
+  @pcon
+end
+
+p pcon
+puts ''
+
+if pcon[:commit]
+  log_command = "git show --name-status #{pcon[:commit]}"
+  status = nil
+  IO.popen(log_command) do |io|
+    while line = io.gets
+      if line =~ /^commit/
+        log(status) if status
+        status = Status.new
+      end
+      status.add(line)
+    end
+  end
+  log(status)
+  exit
+end
+
+if pcon[:date]
+  date_start = DateTime.new(pcon[:date].year, pcon[:date].month, pcon[:date].day,  0,  0)
+  date_end   = DateTime.new(pcon[:date].year, pcon[:date].month, pcon[:date].day, 23, 59)
+end
+IO.popen('git log --name-status') do |io|
+  status = nil
+  while line = io.gets
+    if line =~ /^commit/
+      if status
+        date = DateTime.parse(status[:date])
+        if pcon[:date]
+          log(status) if date_start <= date && date <= date_end
+          break if date_start > date
+        else
+          log(status)
+        end
+      end
+      status = Status.new
+    end
+    status.add(line)
+  end
+end
