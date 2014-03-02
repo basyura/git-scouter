@@ -10,7 +10,7 @@ ref : http://blog.basyura.org/entry/2014/02/27/215453
 
 ## Usage
 
-analyze all commit
+analyze today's commit
 
     $ git-scouter
 

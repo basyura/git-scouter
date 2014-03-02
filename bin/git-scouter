@@ -40,11 +40,14 @@ def pcon
   return @pcon if @pcon
   @pcon = Hash.new
   opts = OptionParser.new
-  opts.on("-u user")  {|v| @pcon[:user]   = v }
-  opts.on("-c commit"){|v| @pcon[:commit] = v }
-  opts.on("-d date")  {|v| @pcon[:date]   = parse_date(v) }
-  opts.on("--debug")  {|v| @pcon[:debug]  = true }
+  opts.on("-a", "--all")  {|v| @pcon[:all]    = true}
+  opts.on("-u user")      {|v| @pcon[:user]   = v }
+  opts.on("-c commit")    {|v| @pcon[:commit] = v }
+  opts.on("-d date")      {|v| @pcon[:date]   = parse_date(v) }
+  opts.on("--debug")      {|v| @pcon[:debug]  = true }
   opts.parse!(ARGV)
+
+  @pcon[:date] = DateTime.now if !@pcon[:all] && !@pcon[:date]
   @pcon
 end
 
