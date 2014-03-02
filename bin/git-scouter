@@ -11,7 +11,7 @@ def get_content(commit, file_path)
 end
 
 def log(status)
-  return if pcon[:user] && status[:author] !~ /#{pcon[:user]}/
+  return 0 if pcon[:user] && status[:author] !~ /#{pcon[:user]}/
 
   total = 0
   point_logs = []
@@ -34,6 +34,7 @@ def log(status)
   puts status.comment
   #point_logs.each {|log| puts log }
   #puts '' if point_logs.empty?
+  total
 end
 
 def pcon
@@ -89,19 +90,21 @@ if pcon[:date]
 end
 IO.popen('git log --name-status') do |io|
   status = nil
+  total  = 0
   while line = io.gets
     if line =~ /^commit/
       if status
         date = DateTime.parse(status[:date])
         if pcon[:date]
-          log(status) if date_start <= date && date <= date_end
+          total += log(status) if date_start <= date && date <= date_end
           break if date_start > date
         else
-          log(status)
+          total += log(status)
         end
       end
       status = GitScouter::Status.new
     end
     status.add(line)
   end
+  puts "\ntotal : #{total}"
 end
