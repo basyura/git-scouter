@@ -34,6 +34,10 @@ analyze target one day's commit
 
     $ git-scouter -d -1
 
+analyze latest five commit 
+
+    $ git-scouter -n 5
+
 analyze commit
 
     $ git-scouter -c HEAD

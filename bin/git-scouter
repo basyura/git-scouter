@@ -41,11 +41,12 @@ def pcon
   return @pcon if @pcon
   @pcon = Hash.new
   opts = OptionParser.new
-  opts.on("-a", "--all")  {|v| @pcon[:all]    = true}
-  opts.on("-u user")      {|v| @pcon[:user]   = v }
-  opts.on("-c commit")    {|v| @pcon[:commit] = v }
-  opts.on("-d date")      {|v| @pcon[:date]   = parse_date(v) }
-  opts.on("--debug")      {|v| @pcon[:debug]  = true }
+  opts.on("-a", "--all") {|v| @pcon[:all]    = true}
+  opts.on("-u user")     {|v| @pcon[:user]   = v }
+  opts.on("-c commit")   {|v| @pcon[:commit] = v }
+  opts.on("-d date")     {|v| @pcon[:date]   = parse_date(v) }
+  opts.on("-n num")      {|v| @pcon[:num]    = v}
+  opts.on("--debug")     {|v| @pcon[:debug]  = true }
   opts.parse!(ARGV)
 
   @pcon[:date] = DateTime.now if !@pcon[:all] && !@pcon[:date]
@@ -91,15 +92,20 @@ end
 IO.popen('git log --name-status') do |io|
   status = nil
   total  = 0
+  num    = 0
   while line = io.gets
     if line =~ /^commit/
       if status
         date = DateTime.parse(status[:date])
         if pcon[:date]
           total += log(status) if date_start <= date && date <= date_end
+          num += 1
+          break if pcon[:num] && pcon[:num].to_i <= num
           break if date_start > date
         else
           total += log(status)
+          num += 1
+          break if pcon[:num] && pcon[:num].to_i <= num
         end
       end
       status = GitScouter::Status.new
