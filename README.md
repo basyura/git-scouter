@@ -42,6 +42,10 @@ analyze commit
 
     $ git-scouter -c c1b543b46ddfc87a2ab1f5088a33ff3634be94a6
 
+analyze yesterday's user commit
+
+    $ git-scouter -u basyura -d -1
+
 output
 
       0 : 6bcf7d95c0289289794499b0959e20bfb91b750d - basyura  Sat Feb 15 22:26:08 2014 +0900
