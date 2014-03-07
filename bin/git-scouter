@@ -17,6 +17,7 @@ def log(status)
   point_logs = []
 
   for file in status.files
+    next if pcon[:exclude] && file =~ /#{pcon[:exclude]}/
     content1 = get_content(status[:commit], file)
     content2 = get_content(status[:commit] + '~', file)
     lcs = Diff::LCS.LCS(content1, content2)
@@ -27,12 +28,12 @@ def log(status)
     v2 = v2 * -1 if v2 < 0
     point = v1 > v2 ? v1 : v2
     total += point
-    point_logs << point.to_s.rjust(16) + "  " + file + " (#{v1} : #{v2})"
+    point_logs << point.to_s.rjust(16) + "  " + file
   end
 
   puts "#{total.to_s.rjust(8)} : #{status[:commit]} - #{status[:author]}  #{status[:date]}"
   puts status.comment
-  #point_logs.each {|log| puts log }
+  point_logs.each {|log| puts log } if pcon[:list]
   #puts '' if point_logs.empty?
   total
 end
@@ -41,12 +42,14 @@ def pcon
   return @pcon if @pcon
   @pcon = Hash.new
   opts = OptionParser.new
-  opts.on("-a", "--all") {|v| @pcon[:all]    = true}
-  opts.on("-u user")     {|v| @pcon[:user]   = v }
-  opts.on("-c commit")   {|v| @pcon[:commit] = v }
-  opts.on("-d date")     {|v| @pcon[:date]   = parse_date(v) }
-  opts.on("-n num")      {|v| @pcon[:num]    = v}
-  opts.on("--debug")     {|v| @pcon[:debug]  = true }
+  opts.on("-a", "--all")               {|v| @pcon[:all]     = true}
+  opts.on("-e expr", "--exclude expr") {|v| @pcon[:exclude] = v }
+  opts.on("-u user")                   {|v| @pcon[:user]    = v }
+  opts.on("-c commit")                 {|v| @pcon[:commit]  = v }
+  opts.on("-d date")                   {|v| @pcon[:date]    = parse_date(v) }
+  opts.on("-n num")                    {|v| @pcon[:num]     = v }
+  opts.on("-l")                        {|v| @pcon[:list]    = true }
+  opts.on("--debug")                   {|v| @pcon[:debug]   = true }
   opts.parse!(ARGV)
 
   @pcon[:date] = DateTime.now if !@pcon[:all] && !@pcon[:date]
