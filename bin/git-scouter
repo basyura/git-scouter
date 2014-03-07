@@ -96,17 +96,31 @@ IO.popen('git log --name-status') do |io|
   status = nil
   total  = 0
   num    = 0
+  cur_date  = nil
+  cur_total = 0
   while line = io.gets
     if line =~ /^commit/
       if status
         date = DateTime.parse(status[:date])
+        cur_date = date unless cur_date
+        if date.strftime("%Y%m%d") != cur_date.strftime("%Y%m%d")
+          puts "\nday total : #{cur_total}\n\n" if cur_total != 0 && !pcon[:date]
+          cur_date  = date
+          cur_total = 0
+        end
         if pcon[:date]
-          total += log(status) if date_start <= date && date <= date_end
+          if date_start <= date && date <= date_end
+            point = log(status) 
+            total     += point
+            cur_total += point
+          end
           num += 1
           break if pcon[:num] && pcon[:num].to_i <= num
           break if date_start > date
         else
-          total += log(status)
+          point = log(status) 
+          total     += point
+          cur_total += point
           num += 1
           break if pcon[:num] && pcon[:num].to_i <= num
         end
@@ -115,5 +129,7 @@ IO.popen('git log --name-status') do |io|
     end
     status.add(line)
   end
+  
+  puts "\nday total : #{cur_total}\n\n" if cur_total != 0 && !pcon[:date]
   puts "\ntotal : #{total}"
 end
