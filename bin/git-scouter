@@ -18,6 +18,7 @@ def log(status)
 
   for file in status.files
     next if pcon[:exclude] && file =~ /#{pcon[:exclude]}/
+    next if GitScouter::Config.instance.ignore?(file)
     content1 = get_content(status[:commit], file)
     content2 = get_content(status[:commit] + '~', file)
     lcs = Diff::LCS.LCS(content1, content2)
