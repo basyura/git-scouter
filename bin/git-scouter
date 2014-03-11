@@ -105,7 +105,7 @@ IO.popen('git log --name-status') do |io|
         date = DateTime.parse(status[:date])
         cur_date = date unless cur_date
         if date.strftime("%Y%m%d") != cur_date.strftime("%Y%m%d")
-          puts "\n#{date.strftime("%Y-%m-%d")} : #{cur_total}\n\n" if cur_total != 0 && !pcon[:date]
+          puts "\n#{cur_date.strftime("%Y-%m-%d")} : #{cur_total}\n\n" if cur_total != 0 && !pcon[:date]
           cur_date  = date
           cur_total = 0
         end
